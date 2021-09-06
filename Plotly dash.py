@@ -67,12 +67,17 @@ def pie(site_dropdown):
 # TASK 4:
 # Add a callback function for `site-dropdown` and `payload-slider` as inputs, `success-payload-scatter-chart` as output
 @app.callback(Output(component_id='success-payload-scatter-chart',component_property='figure'),
-                    Input(component_id='payload-slider',component_property='value'))
-def scatter_plot(payload_in):
+              Input(component_id='payload-slider', component_property='value'),
+              Input(component_id='site-dropdown', component_property='value'))
+def scatter_plot(payload_in,site_dropdown):
     low, high = payload_in
-    mask = (spacex_df['Payload Mass (kg)'] > low) & (spacex_df['Payload Mass (kg)'] < high)
+    if site_dropdown == 'ALL':
+        spacex_df1 = spacex_df
+    else:
+        spacex_df1 =spacex_df[spacex_df['Launch Site'] == site_dropdown]
+    mask = (spacex_df1['Payload Mass (kg)'] > low) & (spacex_df1['Payload Mass (kg)'] < high)
     fig1 = px.scatter(
-        spacex_df[mask], x='Payload Mass (kg)', y="class",
+        spacex_df1[mask], x='Payload Mass (kg)', y="class",
         color="Booster Version Category")
     return(fig1)
 
